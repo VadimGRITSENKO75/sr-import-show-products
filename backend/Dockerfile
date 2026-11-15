@@ -1,7 +1,7 @@
 # ==========================================
 # ЭТАП 1: Установка зависимостей через Composer
 # ==========================================
-FROM composer:2 AS vendor
+FROM composer:2.7 AS vendor
 
 WORKDIR /app
 
@@ -16,15 +16,19 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-di
 # ==========================================
 FROM php:8.3-apache
 
-# Устанавливаем системные зависимости для расширений
+# Устанавливаем системные зависимости для расширений (включая библиотеки для GD)
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libzip-dev \
     librabbitmq-dev \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем стандартные расширения PHP
-RUN docker-php-ext-install pdo pdo_pgsql zip
+# Устанавливаем стандартные расширения PHP, включая GD
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_pgsql zip gd
 
 # Устанавливаем расширение AMQP (его нет в стандартном наборе, ставим через PECL)
 RUN pecl install amqp \
