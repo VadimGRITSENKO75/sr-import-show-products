@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # Сервис с PHP-приложением (Slim)
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: slim_app
+    ports:
+      - "8080:80"
+    depends_on:
+      db:
+        condition: service_healthy # Ждем, пока БД будет готова
+      rabbitmq:
+        condition: service_started
+    environment:
+      # Пример переменных для подключения (замените на свои)
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: app_db
+      DB_USER: app_user
+      DB_PASSWORD: app_password
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+
+  # Сервис базы данных PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: slim_db
+    environment:
+      POSTGRES_DB: app_db
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: app_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app_user -d app_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # Сервис RabbitMQ (с панелью управления)
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: slim_rabbitmq
+    ports:
+      - "5672:5672"   # Порт для AMQP
+      - "15672:15672" # Порт для веб-панели
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+volumes:
+  postgres_data:
