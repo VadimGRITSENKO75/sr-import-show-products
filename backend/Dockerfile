@@ -9,7 +9,9 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 
 # Устанавливаем production-зависимости (без dev)
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+# --ignore-platform-req=ext-gd нужен, потому что в образе composer нет GD,
+# но он появится в финальном образе
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --ignore-platform-req=ext-gd
 
 # ==========================================
 # ЭТАП 2: Финальный образ для запуска
