@@ -1,0 +1,13 @@
+includes:
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+    excludePaths:
+        - src/Migrations
+        - src/Common/Infrastructure/Doctrine/Type/AbstractUuidType.php
+        - src/User/Infrastructure/Persistence/DatabaseUserRepository.php
+    ignoreErrors:
+        - '#Call to an undefined method PhpOffice\\PhpSpreadsheet\\Reader\\.*::(setReadDataOnly|load)\(\)#'
