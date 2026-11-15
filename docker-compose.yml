@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # PHP-приложение (Slim)
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: slim_app
+    ports:
+      - "8080:80"
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    environment:
+      # Подключение к БД (хост = имя сервиса db)
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: app_db
+      DB_USER: postgres
+      DB_PASSWORD: secret
+      # Подключение к RabbitMQ (хост = имя сервиса rabbitmq)
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+    # Монтируем папку uploads, чтобы скачанные картинки не пропадали при перезапуске
+    volumes:
+      - ./backend/public/uploads:/var/www/html/public/uploads
+      - ./backend/var/uploads:/var/www/html/var/uploads
+
+  # PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: slim_db
+    environment:
+      POSTGRES_DB: app_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d app_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # RabbitMQ (с панелью управления)
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: slim_rabbitmq
+    ports:
+      - "5672:5672"   # AMQP порт
+      - "15672:15672" # Веб-панель
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+volumes:
+  postgres_data:

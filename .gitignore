@@ -1,0 +1,22 @@
+# Backend
+/backend/vendor/
+/backend/.env
+/backend/var/uploads/*
+/backend/var/rate_limit/*
+/backend/public/uploads/*
+!/backend/var/uploads/.gitkeep
+!/backend/var/rate_limit/.gitkeep
+!/backend/public/uploads/.gitkeep
+
+# Frontend
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.angular/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
