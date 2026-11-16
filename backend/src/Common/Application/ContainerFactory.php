@@ -14,8 +14,9 @@ class ContainerFactory
         $builder = new ContainerBuilder();
         $root = dirname(__DIR__, 3);
 
-        if ($_SERVER['APP_ENV'] === 'production') {
-            //$builder->enableCompilation($root . '/var/cache');
+        if (($_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? 'development') === 'production') {
+            // В production можно включить компиляцию контейнера для ускорения:
+            // $builder->enableCompilation($root . '/var/cache');
         }
 
         $builder->addDefinitions($root . '/config/settings.php');

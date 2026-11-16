@@ -13,7 +13,7 @@ use Dotenv\Dotenv;
 
 // 1. Загружаем .env
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
-$dotenv->load();
+$dotenv->safeLoad();
 
 // 2. Создаём контейнер
 $container = ContainerFactory::create();

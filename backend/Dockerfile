@@ -18,6 +18,8 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-di
 # ==========================================
 FROM php:8.3-apache
 
+COPY --from=composer:2.7 /usr/bin/composer /usr/local/bin/composer
+
 # Устанавливаем системные зависимости для расширений (включая библиотеки для GD)
 RUN apt-get update && apt-get install -y \
     libpq-dev \

@@ -20,7 +20,7 @@ return static function (App $app) {
 
     $app->group('/users', function (Group $group) {
         $group->get('', ListUsersAction::class);
-        $group->get('/{id}', ViewUserAction::class);// Исправлено: ViewUserAction
+        $group->get('/{id}', ViewUserAction::class);
         $group->post('', AddUserAction::class);
     });
 
@@ -29,35 +29,29 @@ return static function (App $app) {
     $app->get('/api/products/{id}', [ProductController::class, 'show']);
 
     // --- Импорт ---
-    // 1. Загрузка (только один раз, с Rate Limit)
     $app->post('/api/import', [ImportController::class, 'upload'])
         ->add(new RateLimitMiddleware(5, 60));
-
-    // 2. Список импортов
     $app->get('/api/import/list', [ImportController::class, 'list']);
-
-    // 3. Статус/отчет конкретного импорта (только один раз!)
     $app->get('/api/import/status/{taskId}', [ImportController::class, 'status']);
 
     // --- Health Check ---
     $app->get('/api/health', function (Request $request, Response $response) {
         $status = ['status' => 'ok', 'timestamp' => date('c')];
-
         try {
             $em = $this->get(EntityManager::class);
             $em->getConnection()->executeQuery('SELECT 1');
             $status['db'] = 'ok';
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $status['db'] = 'error';
             $status['db_error'] = $e->getMessage();
             $status['status'] = 'degraded';
             $response = $response->withStatus(503);
         }
-
         $response->getBody()->write(json_encode($status));
         return $response->withHeader('Content-Type', 'application/json');
     });
 
+    // --- Swagger ---
     $app->get('/docs', function (Request $request, Response $response) {
         $file = __DIR__ . '/../public/docs/index.html';
         if (!file_exists($file)) {

@@ -16,6 +16,7 @@ services:
         condition: service_started
     environment:
       # Подключение к БД (хост = имя сервиса db)
+      APP_ENV: development
       DB_HOST: db
       DB_PORT: 5432
       DB_NAME: app_db

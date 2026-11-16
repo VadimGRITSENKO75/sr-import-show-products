@@ -11,7 +11,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // 1. Загрузка .env ДО bootstrap (чтобы $_ENV были доступны в контейнере)
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));
-$dotenv->load();
+$dotenv->safeLoad();
 
 // 2. Bootstrap приложения (создаёт $app и контейнер)
 require __DIR__ . '/../src/bootstrap.php';

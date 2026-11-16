@@ -64,7 +64,7 @@ return [
     // EntityManager (PostgreSQL, драйвер атрибутов, snake_case для колонок)
     EntityManager::class => static function (ContainerInterface $c) {
         $settings = $c->get('settings')['doctrine'];
-        $isDev = (($_SERVER['APP_ENV'] ?? 'development') !== 'production');
+        $isDev = (($_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? 'development') !== 'production');
         $proxyDir = $isDev ? null : ($settings['proxy_dir'] ?? null);
 
         Type::addType(UserIdType::USER_ID, UserIdType::class);
