@@ -1,3 +1,4 @@
+# OS / IDE
 .DS_Store
 .DS_Store?
 ._*
@@ -6,10 +7,29 @@
 ehthumbs.db
 Thumbs.db
 .idea/
+.vscode/
+
+# Composer
 /vendor/
+
+# Логи
 /logs/
 !/logs/README.md
-/var/
+
+# Переменные окружения
 .env
+
+# Кэши
 /.phpunit.cache
 .php-cs-fixer.cache
+
+# Временные файлы (НО НЕ .gitkeep)
+/var/*
+!/var/uploads/
+!/var/uploads/.gitkeep
+!/var/rate_limit/
+!/var/rate_limit/.gitkeep
+
+# Загруженные файлы (НО НЕ .gitkeep)
+/public/uploads/*
+!/public/uploads/.gitkeep
