@@ -54,4 +54,6 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 RUN mkdir -p /var/www/html/var/uploads /var/www/html/public/uploads \
     && chown -R www-data:www-data /var/www/html/var /var/www/html/public/uploads
 
+RUN echo "DirectorySlash Off" >> /etc/apache2/apache2.conf
+
 EXPOSE 80

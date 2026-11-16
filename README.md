@@ -133,7 +133,7 @@ npm install
 Запустите сервер разработки:
 
 ```bash
-npm start
+npm start -- --host 0.0.0.0
 ```
 Приложение будет доступно по адресу http://localhost:4200.
 
@@ -198,6 +198,12 @@ docker compose exec app php bin/worker.php
 Приложение доступно: http://localhost:8080
 
 RabbitMQ Management: http://localhost:15672 (guest/guest)
+
+Выдайте права на запись для папок загрузок (это нужно один раз после клонирования, чтобы PHP-контейнер мог сохранять файлы и картинки):
+
+```bash
+sudo chown -R 33:33 backend/var/uploads backend/var/rate_limit backend/public/uploads
+```
 
 ## 🛑 Остановка
 ```bash
